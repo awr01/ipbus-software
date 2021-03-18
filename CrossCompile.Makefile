@@ -42,7 +42,7 @@ ${DIRECTORIES}:
 ${WORKING_DIR}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz : | ${WORKING_DIR}
 	wget -nc -t0 -P ${WORKING_DIR} https://developer.arm.com/-/media/Files/downloads/gnu-a/${COMPILER_VERSION}/binrel/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz
 
-${CXX} : ${WORKING_DIR}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz
+${CXX} : ${WORKING_DIR}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz | ${PREFIX}
 	tar -C ${PREFIX} -xmJf $<
 # ----------------------------------------------------------------------------------------------
 
