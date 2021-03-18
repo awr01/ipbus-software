@@ -63,15 +63,15 @@ ${WORKING_DIR}/${BOOST}.tar.gz : | ${WORKING_DIR}
 	wget -nc -t0 -P ${WORKING_DIR} https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/${BOOST}.tar.gz
 
 ${WORKING_DIR}/${BOOST} : ${WORKING_DIR}/${BOOST}.tar.gz
-	tar -C ${WORKING_DIR} -xzf $<
+	tar -C ${WORKING_DIR} -xmzf $<
 
 ${WORKING_DIR}/${BOOST}/project-config.jam : ${WORKING_DIR}/${BOOST}
-	cd $< ; ./bootstrap.sh --prefix=${PREFIX} ;
+	cd $< ; ./bootstrap.sh --prefix=${PREFIX}; 
 	sed -i "s|using gcc ;|using gcc : arm : ${CXX} ;|g" $@
 
-${PREFIX}/boost/lib/libboost_wserialization.so : ${WORKING_DIR}/${BOOST}/project-config.jam ${CXX}
-	cd ${WORKING_DIR}/${BOOST}; ./b2 install toolset=gcc-arm link=shared runtime-link=shared -prefix=${PREFIX}
+${PREFIX}/lib/libboost_wserialization.so : ${WORKING_DIR}/${BOOST}/project-config.jam ${CXX}
+	cd ${WORKING_DIR}/${BOOST}; ./b2 install toolset=gcc-arm link=shared runtime-link=shared --prefix=${PREFIX}
 
-boost_library : ${PREFIX}/boost/lib/libboost_wserialization.so
+boost_library : ${PREFIX}/lib/libboost_wserialization.so
 # ----------------------------------------------------------------------------------------------
 

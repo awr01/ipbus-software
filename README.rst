@@ -1,35 +1,17 @@
-IPbus software
-==============
+IPbus software - Cross-compiler fork
+====================================
 
-The IPbus protocol is a simple packet-based control protocol for reading and modifying memory-mapped resources within FPGA-based IP-aware hardware devices which have a virtual A32/D32 bus.
+Forked from https://github.com/ipbus/ipbus-software
 
-The IPbus suite of software and firmware implement a reliable high-performance control link for particle physics electronics, based on the IPbus protocol. This suite has successfully replaced VME control in several large projects, and consists of the following components:
+Overview
+--------
 
-**IPbus firmware**
-  A module that implements the IPbus protocol within end-user hardware.
+This fork prototypes a mechanism for cross-compiling uHAL for ARM aarch64 processors.
 
-**ControlHub**
-  A software application that mediates simultaneous hardware access from multiple uHAL clients, and implements the IPbus reliability mechanism over UDP
+Recipe
+------
 
-**uHAL** 
-  The Hardware Access Library (HAL) providing an end-user C++/Python API for IPbus reads, writes and RMW (read-modify-write) transactions.
-
-This repository contains the source code for the ControlHub and uHAL. 
-
-**Documentation**
-
-The IPbus suite user guide can be found on our website, https://cern.ch/ipbus . In particular:
-
- * Installation instructions reside at https://ipbus.web.cern.ch/doc/user/html/software/installation.html
- * Release notes listing all of the changes in the tagged releases can be found from https://ipbus.web.cern.ch/doc/user/html/software/releases/index.html
-
-**Further reading**
-
-The **most recent paper** describing IPbus is from the proceedings for TWEPP2014:
-
-  \C. Ghabrous Larrea, K. Harder, D. Newbold, D. Sankey, A. Rose, A. Thea and T. Williams, "IPbus: a flexible Ethernet-based control system for xTCA hardware", *JINST* **10** (2015) no.02, C02019. `DOI: 10.1088/1748-0221/10/02/C02019 <http://dx.doi.org/10.1088/1748-0221/10/02/C02019>`__
-
-Licence
--------
-
-The ControlHub and uHAL are distributed under the version 3 of the GNU General Public License, which can be found in the LICENCE file in the same directory as this README. They are supported on a best-effort basis, and is provided on an "AS IS" BASIS, WITHOUT WARRANTY OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.
+.. code-block::
+  sudo mkdir -m 777 /opt/xcompile
+  make -f CrossCompile.Makefile PREFIX=/opt/xcompile
+  make CXX=/opt/xcompile/gcc-arm-10.2-2020.11-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-g++ EXTERN_BOOST=/opt/xcompile EXTERN_PUGIXML=/opt/xcompile -j8 Set=uhal NO_UHAL_OPTIONALS=1
