@@ -4,12 +4,12 @@ BUILD_HOME := $(shell cd $(BUILD_HOME); pwd)
 $(info Using BUILD_HOME=${BUILD_HOME})
 
 # Compilers
-CXX = g++
+CXX ?= g++
 LD = ${CXX}
-AR = ar
+AR = $(patsubst %g++,%ar,${CXX})
 
 # Compiler flags
-CXXFLAGS = -g -Wall -pedantic -O3 -MMD -MP -fPIC
+CXXFLAGS = -g -Wall -pedantic -O3 -MMD -MP -fPIC -std=c++11 # Minimum C++ standard: C++11 (default standard is C++14 from GCC 6.1)
 ARFLAGS = rc
 
 ifdef BUILD_STATIC
@@ -21,7 +21,6 @@ endif
 # Tools
 MakeDir = mkdir -p
 
-
 PYTHON ?= python
 PYTHON_VERSION ?= $(shell ${PYTHON} -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_version())")
 PYTHON_INCLUDE_PREFIX ?= $(shell ${PYTHON} -c "import distutils.sysconfig; print(distutils.sysconfig.get_python_inc())")
@@ -32,8 +31,3 @@ CXX_VERSION_TAG = $(word 1, $(shell ${CXX} --version))
 CXX_VERSION_TAG := $(subst g++,gcc,${CXX_VERSION_TAG})
 CXX_VERSION_TAG := ${CXX_VERSION_TAG}$(shell ${CXX} -dumpfullversion -dumpversion)
 CXX_VERSION_TAG := $(subst .,_,${CXX_VERSION_TAG})
-
-# Minimum C++ standard: C++11 (default standard is C++14 from GCC 6.1)
-ifneq (,$(findstring gcc4,${CXX_VERSION_TAG})$(findstring gcc5,${CXX_VERSION_TAG})$(findstring gcc6_0,${CXX_VERSION_TAG}))
-  CXXFLAGS += -std=c++11
-endif

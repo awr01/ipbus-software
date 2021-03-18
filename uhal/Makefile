@@ -12,27 +12,30 @@ PACKAGES = \
 	tools
 
 
-BUILD_UHAL_TESTS?=1
+NO_UHAL_OPTIONALS ?= 0
+BUILD_DEFAULT = $(shell expr 1 - $(NO_UHAL_OPTIONALS) )
+
+BUILD_UHAL_TESTS?=$(BUILD_DEFAULT)
 ifneq ($(BUILD_UHAL_TESTS), 1)
 	PACKAGES := $(filter-out tests, $(PACKAGES))
 endif
 
-BUILD_UHAL_PYTHON?=1
+BUILD_UHAL_PYTHON?=$(BUILD_DEFAULT)
 ifneq ($(BUILD_UHAL_PYTHON), 1)
 	PACKAGES := $(filter-out python, $(PACKAGES))
 endif
 
-BUILD_UHAL_GUI?=1
+BUILD_UHAL_GUI?=$(BUILD_DEFAULT)
 ifneq ($(BUILD_UHAL_GUI), 1)
 	PACKAGES := $(filter-out gui, $(PACKAGES))
 endif
 
-BUILD_UHAL_TOOLS?=1
+BUILD_UHAL_TOOLS?=$(BUILD_DEFAULT)
 ifneq ($(BUILD_UHAL_TOOLS), 1)
 	PACKAGES := $(filter-out tools, $(PACKAGES))
 endif
 
-
+$(info SUBPACKAGES=$(PACKAGES))
 
 VIRTUAL_PACKAGES = $(addsuffix /.virtual.Makefile,${PACKAGES})
 

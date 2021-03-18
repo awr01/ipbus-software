@@ -4,16 +4,13 @@ BUILD_HOME := $(shell cd ${BUILD_HOME}; pwd)
 CACTUS_ROOT ?= /opt/cactus
 CACTUS_RPM_ROOT ?= $(BUILD_HOME)
 
-
 PYTHON ?= python
 CACTUS_PLATFORM=$(shell if [ -f /etc/system-release ]; then cat /etc/system-release; fi)
 CACTUS_OS=unknown.os
 
 UNAME=$(strip $(shell uname -s))
 ifeq ($(UNAME),Linux)
-    ifneq ($(findstring Scientific Linux CERN SLC release 6,$(CACTUS_PLATFORM)),)
-        CACTUS_OS=slc6
-    else ifneq ($(findstring CentOS Linux release 7,$(CACTUS_PLATFORM)),)
+    ifneq ($(findstring CentOS Linux release 7,$(CACTUS_PLATFORM)),)
         CACTUS_OS=centos7
     else ifneq ($(findstring CentOS Linux release 8,$(CACTUS_PLATFORM)),)
         CACTUS_OS=centos8
@@ -24,30 +21,12 @@ endif
 
 $(info OS Detected: $(CACTUS_OS))
 
-# Set which externals are built by default for each OS
-ifeq ($(CACTUS_OS), slc6)
-    BUILD_ERLANG?=1
-    BUILD_BOOST?=1
-    BUILD_PUGIXML?=1
+ifdef EXTERN_BOOST
+    EXTERN_BOOST_INCLUDE_PREFIX = ${EXTERN_BOOST}/include
+    EXTERN_BOOST_LIB_PREFIX = ${EXTERN_BOOST}/lib
 endif
 
-
-#extern/erlang
-ifeq ($(BUILD_ERLANG), 1)
-    EXTERN_ERLANG_PREFIX = $(CACTUS_RPM_ROOT)/extern/erlang/RPMBUILD/SOURCES
-    EXTERN_ERLANG_BIN_PREFIX = ${EXTERN_ERLANG_PREFIX}/bin
-endif
-
-#extern/boost
-ifeq ($(BUILD_BOOST), 1)
-    EXTERN_BOOST_PREFIX = $(CACTUS_RPM_ROOT)/extern/boost/RPMBUILD/SOURCES
-    EXTERN_BOOST_INCLUDE_PREFIX = ${EXTERN_BOOST_PREFIX}/include
-    EXTERN_BOOST_LIB_PREFIX = ${EXTERN_BOOST_PREFIX}/lib
-endif
-
-#extern/pugixml
-ifeq ($(BUILD_PUGIXML), 1)
-    EXTERN_PUGIXML_PREFIX = $(CACTUS_RPM_ROOT)/extern/pugixml/RPMBUILD/SOURCES
-    EXTERN_PUGIXML_INCLUDE_PREFIX = ${EXTERN_PUGIXML_PREFIX}/include
-    EXTERN_PUGIXML_LIB_PREFIX = ${EXTERN_PUGIXML_PREFIX}/lib
+ifdef EXTERN_PUGIXML
+    EXTERN_PUGIXML_INCLUDE_PREFIX = ${EXTERN_PUGIXML}/include
+    EXTERN_PUGIXML_LIB_PREFIX = ${EXTERN_PUGIXML}/lib
 endif
