@@ -25,14 +25,12 @@ LIBRARY_VER_ABI = $(PACKAGE_VER_MAJOR).$(PACKAGE_VER_MINOR)
 
 
 IncludePaths = include  \
-		${EXTERN_BOOST_INCLUDE_PREFIX} \
-		${EXTERN_PUGIXML_INCLUDE_PREFIX} \
+		${INCLUDE_PREFIX} \
 		${BUILD_HOME}/uhal/log/include \
 		${BUILD_HOME}/uhal/grammars/include \
 		${BUILD_HOME}/uhal/uhal/include
 
-LibraryPaths = ${EXTERN_BOOST_LIB_PREFIX} \
-		${EXTERN_PUGIXML_LIB_PREFIX} \
+LibraryPaths = ${LIB_PREFIX} \
 		${BUILD_HOME}/uhal/log/lib \
 		${BUILD_HOME}/uhal/grammars/lib \
 		${BUILD_HOME}/uhal/uhal/lib \

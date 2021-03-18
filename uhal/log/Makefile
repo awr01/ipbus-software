@@ -24,9 +24,9 @@ LIBRARY_VER_ABI = $(PACKAGE_VER_MAJOR).$(PACKAGE_VER_MINOR)
 
 
 IncludePaths = include  \
-	${EXTERN_BOOST_INCLUDE_PREFIX}
+	${INCLUDE_PREFIX}
 
-LibraryPaths = ${EXTERN_BOOST_LIB_PREFIX}
+LibraryPaths = ${LIB_PREFIX}
 
 Libraries = pthread
 

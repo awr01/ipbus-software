@@ -28,8 +28,7 @@ LibraryFile = pkg/uhal/_core.so
 
 IncludePaths = include  \
 		pybind11/include \
-		${EXTERN_BOOST_INCLUDE_PREFIX} \
-		${EXTERN_PUGIXML_INCLUDE_PREFIX} \
+		${INCLUDE_PREFIX} \
 		${PYTHON_INCLUDE_PREFIX} \
 		${BUILD_HOME}/uhal/log/include  \
 		${BUILD_HOME}/uhal/grammars/include \
@@ -37,8 +36,7 @@ IncludePaths = include  \
 		${BUILD_HOME}/uhal/tests/include
 
 LibraryPaths = \
-		${EXTERN_BOOST_LIB_PREFIX} \
-		${EXTERN_PUGIXML_LIB_PREFIX} \
+		${LIB_PREFIX} \
 		${PYTHON_LIB_PREFIX} \
 		${BUILD_HOME}/uhal/log/lib \
 		${BUILD_HOME}/uhal/grammars/lib \

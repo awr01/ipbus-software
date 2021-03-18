@@ -24,7 +24,7 @@ LIBRARY_VER_ABI = $(PACKAGE_VER_MAJOR).$(PACKAGE_VER_MINOR)
 
 
 IncludePaths = include  \
-		${EXTERN_BOOST_INCLUDE_PREFIX} \
+		${INCLUDE_PREFIX} \
 		${BUILD_HOME}/uhal/log/include
 
 LibraryPaths = ${BUILD_HOME}/uhal/log/lib
