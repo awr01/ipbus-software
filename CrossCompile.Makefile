@@ -1,6 +1,6 @@
-PREFIX ?= $(shell pwd)
+PREFIX ?= $(shell pwd)/xcompile
 
-WORKING_DIR = cross-compile
+WORKING_DIR = $(shell pwd)/.xcompile
 
 COMPILER_VERSION = 10.2-2020.11
 CXX = ${PREFIX}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-g++
@@ -35,7 +35,7 @@ _all: ${CXX} pugixml_library boost_library
 
 # ----------------------------------------------------------------------------------------------
 ${DIRECTORIES}:
-	mkdir -m 777 -p $@
+	mkdir -p $@
 # ----------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------
