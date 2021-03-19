@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x #echo on
+set -e #exit on error
 
 make -f CrossCompile.Makefile
 

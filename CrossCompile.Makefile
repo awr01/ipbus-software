@@ -15,7 +15,7 @@ PUGIXML_MINOR = 11
 PUGIXML_PATCH = 4
 PUGIXML = pugixml
 
-DIRECTORIES = ${WORKING_DIR} ${PREFIX}/include ${PREFIX}/lib
+DIRECTORIES = ${WORKING_DIR} ${PREFIX} ${PREFIX}/include ${PREFIX}/lib
 
 
 
@@ -31,7 +31,7 @@ all: _all
 build: _all
 buildall: _all
 
-_all: ${CXX} pugixml_library boost_library
+_all: ${PREFIX} ${CXX} pugixml_library boost_library
 
 # ----------------------------------------------------------------------------------------------
 ${DIRECTORIES}:
@@ -40,7 +40,7 @@ ${DIRECTORIES}:
 
 # ----------------------------------------------------------------------------------------------
 ${WORKING_DIR}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz : | ${WORKING_DIR}
-	wget -nc -t0 -P ${WORKING_DIR} https://developer.arm.com/-/media/Files/downloads/gnu-a/${COMPILER_VERSION}/binrel/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz
+	wget -nc -t0 -P ${WORKING_DIR} https://developer.arm.com/-/media/Files/downloads/gnu-a/${COMPILER_VERSION}/binrel/$$(basename $@)
 
 ${CXX} : ${WORKING_DIR}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu.tar.xz | ${PREFIX}
 	tar -C ${PREFIX} -xmJf $<
@@ -60,7 +60,7 @@ pugixml_library : ${PREFIX}/lib/libpugixml.so
 
 # ----------------------------------------------------------------------------------------------
 ${WORKING_DIR}/${BOOST}.tar.gz : | ${WORKING_DIR}
-	wget -nc -t0 -P ${WORKING_DIR} https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/${BOOST}.tar.gz
+	wget -nc -t0 -P ${WORKING_DIR} https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/$$(basename $@)
 
 ${WORKING_DIR}/${BOOST} : ${WORKING_DIR}/${BOOST}.tar.gz
 	tar -C ${WORKING_DIR} -xmzf $<
