@@ -15,7 +15,7 @@ PUGIXML_MINOR = 11
 PUGIXML_PATCH = 4
 PUGIXML = pugixml
 
-DIRECTORIES = ${WORKING_DIR} ${PREFIX} ${PREFIX}/include ${PREFIX}/lib
+DIRECTORIES = ${WORKING_DIR} ${PREFIX}/include ${PREFIX}/lib
 
 
 
@@ -69,7 +69,7 @@ ${WORKING_DIR}/${BOOST}/project-config.jam : ${WORKING_DIR}/${BOOST}
 	cd $< ; ./bootstrap.sh --prefix=${PREFIX}; 
 	sed -i "s|using gcc ;|using gcc : arm : ${CXX} ;|g" $@
 
-${PREFIX}/lib/libboost_wserialization.so : ${WORKING_DIR}/${BOOST}/project-config.jam ${CXX}
+${PREFIX}/lib/libboost_wserialization.so : ${WORKING_DIR}/${BOOST}/project-config.jam ${CXX} | ${PREFIX}/include ${PREFIX}/lib
 	cd ${WORKING_DIR}/${BOOST}; ./b2 install toolset=gcc-arm link=shared runtime-link=shared --prefix=${PREFIX}
 
 boost_library : ${PREFIX}/lib/libboost_wserialization.so
