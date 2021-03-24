@@ -1,6 +1,6 @@
 PREFIX ?= $(shell pwd)/xcompile
 
-WORKING_DIR = $(shell pwd)/.xcompile
+WORKING_DIR ?= $(shell pwd)/.xcompile
 
 COMPILER_VERSION = 10.2-2020.11
 CXX = ${PREFIX}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-g++
@@ -21,7 +21,7 @@ all: _all
 build: _all
 buildall: _all
 
-_all: ${PREFIX} ${CXX} libs
+_all: ${CXX} libs
 
 # ----------------------------------------------------------------------------------------------
 ${DIRECTORIES}:
