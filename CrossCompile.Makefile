@@ -5,16 +5,6 @@ WORKING_DIR = $(shell pwd)/.xcompile
 COMPILER_VERSION = 10.2-2020.11
 CXX = ${PREFIX}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gnu/bin/aarch64-none-linux-gnu-g++
 
-BOOST_MAJOR = 1
-BOOST_MINOR = 75
-BOOST_PATCH = 0
-BOOST = boost_${BOOST_MAJOR}_${BOOST_MINOR}_${BOOST_PATCH}
-
-PUGIXML_MAJOR = 1
-PUGIXML_MINOR = 11
-PUGIXML_PATCH = 4
-PUGIXML = pugixml
-
 DIRECTORIES = ${WORKING_DIR} ${PREFIX} ${PREFIX}/include ${PREFIX}/lib
 
 
@@ -31,7 +21,7 @@ all: _all
 build: _all
 buildall: _all
 
-_all: ${PREFIX} ${CXX} pugixml_library boost_library
+_all: ${PREFIX} ${CXX} libs
 
 # ----------------------------------------------------------------------------------------------
 ${DIRECTORIES}:
@@ -47,31 +37,52 @@ ${CXX} : ${WORKING_DIR}/gcc-arm-${COMPILER_VERSION}-x86_64-aarch64-none-linux-gn
 # ----------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------
-${WORKING_DIR}/${PUGIXML} : | ${WORKING_DIR}
-	git config --global advice.detachedHead false
-	git clone --depth 1 -b v${PUGIXML_MAJOR}.${PUGIXML_MINOR}.${PUGIXML_PATCH} https://github.com/zeux/pugixml.git $@
+/etc/yum.repos.d/aarch64.repo:
+	sudo echo -e "[arm]\nname=arm\nbaseurl=http://linuxsoft.cern.ch/centos-altarch/7/os/aarch64/\n\n[arm-epel]\nname=arm-epel\nbaseurl=http://linuxsoft.cern.ch/epel/7/aarch64/" > /etc/yum.repos.d/aarch64.repo
+	sudo yum makecache
 
-${PREFIX}/lib/libpugixml.so : ${WORKING_DIR}/${PUGIXML} ${CXX} | ${PREFIX}/include ${PREFIX}/lib
-	cp $</src/*.hpp ${PREFIX}/include
-	${CXX} -fPIC -O3 -shared -o $@ $</src/pugixml.cpp
-
-pugixml_library : ${PREFIX}/lib/libpugixml.so
+repo_config: /etc/yum.repos.d/aarch64.repo
 # ----------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------
-${WORKING_DIR}/${BOOST}.tar.gz : | ${WORKING_DIR}
-	wget -nc -t0 -P ${WORKING_DIR} https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/$$(basename $@)
+${WORKING_DIR}/zlib-1.2.7-18.el7.aarch64.rpm : | ${WORKING_DIR}
+	repotrack -a aarch64 -p ${WORKING_DIR} boost169 boost169-devel pugixml pugixml-devel
 
-${WORKING_DIR}/${BOOST} : ${WORKING_DIR}/${BOOST}.tar.gz
-	tar -C ${WORKING_DIR} -xmzf $<
 
-${WORKING_DIR}/${BOOST}/project-config.jam : ${WORKING_DIR}/${BOOST}
-	cd $< ; ./bootstrap.sh --prefix=${PREFIX}; 
-	sed -i "s|using gcc ;|using gcc : arm : ${CXX} ;|g" $@
+libs : ${WORKING_DIR}/zlib-1.2.7-18.el7.aarch64.rpm | ${PREFIX}/include ${PREFIX}/lib
+	cd ${PREFIX}/include ; for i in $$(find ${WORKING_DIR} -iname "*.rpm"); do rpm2cpio $${i} | cpio --quiet -idu *.h *.hpp *.ipp ; done
+	cd ${PREFIX}/lib ; for i in $$(find ${WORKING_DIR} -iname "*.rpm"); do rpm2cpio $${i} | cpio --quiet -idu *.so *.so.* ; done
+# 	cp -rf ${WORKING_DIR}/lib64/* ${PREFIX}/lib64
+# 	cp -rf ${WORKING_DIR}/lib/* ${WORKING_DIR}/usr/lib64/* ${PREFIX}/lib
+# 	cp -rf ${WORKING_DIR}/usr/include/* ${PREFIX}/include
+#	ln -s ${PREFIX}/include/boost169/boost ${PREFIX}/include/boost
 
-${PREFIX}/lib/libboost_wserialization.so : ${WORKING_DIR}/${BOOST}/project-config.jam ${CXX} | ${PREFIX}/include ${PREFIX}/lib
-	cd ${WORKING_DIR}/${BOOST}; ./b2 install toolset=gcc-arm link=shared runtime-link=shared --prefix=${PREFIX}
+# # ----------------------------------------------------------------------------------------------
+# ${WORKING_DIR}/${PUGIXML} : | ${WORKING_DIR}
+# 	git config --global advice.detachedHead false
+# 	git clone --depth 1 -b v${PUGIXML_MAJOR}.${PUGIXML_MINOR}.${PUGIXML_PATCH} https://github.com/zeux/pugixml.git $@
 
-boost_library : ${PREFIX}/lib/libboost_wserialization.so
-# ----------------------------------------------------------------------------------------------
+# ${PREFIX}/lib/libpugixml.so : ${WORKING_DIR}/${PUGIXML} ${CXX} | ${PREFIX}/include ${PREFIX}/lib
+# 	cp $</src/*.hpp ${PREFIX}/include
+# 	${CXX} -fPIC -O3 -shared -o $@ $</src/pugixml.cpp
+
+# pugixml_library : ${PREFIX}/lib/libpugixml.so
+# # ----------------------------------------------------------------------------------------------
+
+# # ----------------------------------------------------------------------------------------------
+# ${WORKING_DIR}/${BOOST}.tar.gz : | ${WORKING_DIR}
+# 	wget -nc -t0 -P ${WORKING_DIR} https://dl.bintray.com/boostorg/release/${BOOST_MAJOR}.${BOOST_MINOR}.${BOOST_PATCH}/source/$$(basename $@)
+
+# ${WORKING_DIR}/${BOOST} : ${WORKING_DIR}/${BOOST}.tar.gz
+# 	tar -C ${WORKING_DIR} -xmzf $<
+
+# ${WORKING_DIR}/${BOOST}/project-config.jam : ${WORKING_DIR}/${BOOST}
+# 	cd $< ; ./bootstrap.sh --prefix=${PREFIX}; 
+# 	sed -i "s|using gcc ;|using gcc : arm : ${CXX} ;|g" $@
+
+# ${PREFIX}/lib/libboost_wserialization.so : ${WORKING_DIR}/${BOOST}/project-config.jam ${CXX} | ${PREFIX}/include ${PREFIX}/lib
+# 	cd ${WORKING_DIR}/${BOOST}; ./b2 install toolset=gcc-arm link=shared runtime-link=shared --prefix=${PREFIX}
+
+# boost_library : ${PREFIX}/lib/libboost_wserialization.so
+# # ----------------------------------------------------------------------------------------------
 
